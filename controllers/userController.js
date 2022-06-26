@@ -5,7 +5,7 @@ export const register = async (req,res)=>{
     const {email,password} = req.body;
     try {
         if(await User.findOne({email})){
-            throw new Error('user is the database');
+            throw new Error('user is in the database');
         }
         const user = new User({email,password});
         await  user.save();
@@ -17,9 +17,17 @@ export const register = async (req,res)=>{
 
 
 export const login = async (req,res)=>{
+    const {email,password} = req.body;
+
     try {
-        
+        // const user = new User({email,password});
+        if(!await User.findOne({email})){
+            throw new Error('there is not user with that email.');
+        }
+        return res.json({message:'session iniciated.'});
+
+
     } catch (error) {
-        
+        return res.json({error:error.message});
     }
 }
