@@ -20,9 +20,13 @@ export const login = async (req,res)=>{
     const {email,password} = req.body;
 
     try {
-        // const user = new User({email,password});
-        if(!await User.findOne({email})){
+        const user = await  User.findOne({email});
+        if(!user){
             throw new Error('there is not user with that email.');
+        }
+        
+        if(!await user.validatePassword(password)){
+            throw new Error('incorrect password.');
         }
         return res.json({message:'session iniciated.'});
 
