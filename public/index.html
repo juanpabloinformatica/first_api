@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <form action="" method="post" class="form">
+        <label for="email">Email</label>
+        <br>
+        <input 
+        type="text"
+        value="dinero@mail.com"
+        name = "email"
+        class="email"
+        >
+        <br>
+        <label for="password">Password</label>
+        <br>
+        <input 
+        type="password"
+        value="12345678"
+        name ="password"
+        class = "password"
+        >
+        <br>
+        <button type="submit">Acceder</button>
+    </form>
+    <script>
+        const form = document.querySelector('.form');
+        const email = document.querySelector('.email');
+        const password = document.querySelector('.password');
+        
+        form.addEventListener('submit', async (evt) =>{
+            evt.preventDefault();
+            console.log(email.value,password.value);
+            try{
+                console.log('Inside')
+                const res = await fetch('/api/v1/user/login',{
+                    method:'POST',
+                    headers:{
+                        'Content-Type': 'application/json'
+                    },
+                    body:JSON.stringify({email:email.value,password:password.value})
+                })
+                const data = await res.json();
+                console.log(data);
+                localStorage.setItem('token',data.token);
+                console.log(data);
+            }catch(error){
+                console.log(error.message)
+            }
+            
+        })
+
+    </script>
+</body>
+</html>

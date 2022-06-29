@@ -1,7 +1,9 @@
 import express from 'express';
-import { login, register } from '../controllers/userController.js';
+import { infoUser, login, register } from '../controllers/userController.js';
 import {body} from 'express-validator';
 import { userValidator } from '../middlewares/userValidator.js';
+import { tokenValidator } from '../middlewares/tokenRequire.js';
+
 const router = express.Router();
 
 
@@ -19,6 +21,7 @@ router.post('/register',[
 // router.post('/register')
 // router.get('/login',login);
 router.post('/login',login);
+router.get('/protected',tokenValidator,infoUser);
 
 
 export default router;

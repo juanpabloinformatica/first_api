@@ -1,5 +1,6 @@
 import User from '../models/userSchema.js';
-
+import jwt from 'jsonwebtoken';
+import { tokenGenerator } from '../utils/tokenManager.js';
 
 export const register = async (req,res)=>{
     const {email,password} = req.body;
@@ -18,7 +19,7 @@ export const register = async (req,res)=>{
 
 export const login = async (req,res)=>{
     const {email,password} = req.body;
-
+        console.log(email,password);
     try {
         const user = await  User.findOne({email});
         if(!user){
@@ -28,10 +29,21 @@ export const login = async (req,res)=>{
         if(!await user.validatePassword(password)){
             throw new Error('incorrect password.');
         }
-        return res.json({message:'session iniciated.'});
-
+        // const token = jwt.sign({uid:user._id},process.env.JWT_SECRET);
+        const {token,expireIn} = tokenGenerator(user._id);
+        
+        return res.json({token,expireIn});
 
     } catch (error) {
         return res.json({error:error.message});
     }
+}
+export const infoUser = async(req,res)=>{
+    try {
+        const user = await User.findById(req.uid).lean();
+        return res.send({email:`${user.email}`,id:`${user._id}`});
+    } catch (error) {
+        res.status(500).send({error:error.message});
+    }
+    
 }
